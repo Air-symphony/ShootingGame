@@ -56,19 +56,19 @@ public:
 			else {
 				attack = 1;
 			}
-			if (CheckHitKey(KEY_INPUT_UP) == 1) {
+			if (input.Push_KeyUP()) {
 				inertiaY = -movespeed;
 				Y -= movespeed;
 			}
-			if (CheckHitKey(KEY_INPUT_DOWN) == 1) {
+			if (input.Push_KeyDOWN()) {
 				inertiaY = movespeed;
 				Y += movespeed;
 			}
-			if (CheckHitKey(KEY_INPUT_RIGHT) == 1) {
+			if (input.Push_KeyRIGHT()) {
 				inertiaX = movespeed;
 				X += movespeed;
 			}
-			if (CheckHitKey(KEY_INPUT_LEFT) == 1) {
+			if (input.Push_KeyLEFT()) {
 				inertiaX = -movespeed;
 				X -= movespeed;
 			}
@@ -83,7 +83,7 @@ public:
 		Draw(playergraph);
 	}
 	void Inertia(int fpsspeed) {//âΩÉtÉåÅ[ÉÄÇ≈ë¨ìxÇóéÇ∆Ç∑Ç©
-		if (CheckHitKey(KEY_INPUT_UP) == 0 && CheckHitKey(KEY_INPUT_DOWN) == 0 || laserwait) {
+		if (input.Push_KeyUP() && input.Push_KeyDOWN() || laserwait) {
 			if (inertiaY != 0) {
 				Y += inertiaY;
 				inertiaY_time += 1;
@@ -104,7 +104,7 @@ public:
 				}
 			}
 		}
-		if (CheckHitKey(KEY_INPUT_RIGHT) == 0 && CheckHitKey(KEY_INPUT_LEFT) == 0 || laserwait) {
+		if (input.Push_KeyRIGHT() && input.Push_KeyLEFT() || laserwait) {
 			if (inertiaX != 0) {
 				X += inertiaX;
 				inertiaX_time += 1;

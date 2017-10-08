@@ -64,14 +64,14 @@ public:
 		}
 		Draw_String("Please push SPACE");
 		ScreenFlip();// 裏画面の内容を表画面に反映させる 
-		while (ProcessMessage() == 0 && !input.PushOneframe_Dicide()) {}
+		while (ProcessMessage() == 0 && !input.PushOneframe_Decide()) {}
 
 		if (CheckSoundMem(material.bgm_pre) && !loopbgm) {
 			PlaySoundMem(material.bgm_pre, DX_PLAYTYPE_BACK);
 		}
 
 		bool start = true;//pause用
-		while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
+		while (ProcessMessage() == 0 && input.ForcedTermination())
 		{
 			loopbgm = (CheckSoundMem(material.bgm_loop) == 1);
 			if (CheckSoundMem(material.bgm_pre) == 0 && !loopbgm) {
@@ -81,6 +81,8 @@ public:
 				PlaySoundMem(material.bgm_loop, DX_PLAYTYPE_BACK);
 			}
 			ClearDrawScreen();// 画面を初期化する
+
+			DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", input.getJoypad());
 
 			player.Move();
 			player.Shoot();
@@ -187,7 +189,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	Game game;
 	int select = 0;//startにカーソルがあるかどうか
-	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
+	while (ProcessMessage() == 0 && input.ForcedTermination()) {
 		ClearDrawScreen();// 画面を初期化する
 		if (input.PushOneframe_KeyUP()) {
 			PlaySoundMem(material.cursorSE[2], DX_PLAYTYPE_BACK);
@@ -200,6 +202,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			select %= 3;
 		}
 
+		clsDx();
+
+		if ((GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_1) != 0) {
+			printfDx("A");
+		}
+		if ((GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_UP) != 0) {
+			printfDx("UP");
+		}
+		if ((GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_DOWN) != 0) {
+			printfDx("DOWN");
+		}
+
+		DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", input.getJoypad());
+
 		Draw_Graph(SIZE_X / 2, SIZE_Y * 5 / 10, material.textgraph[0]);
 		Draw_Graph(SIZE_X / 2, SIZE_Y * 6 / 10, material.textgraph[4]);
 		Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10, material.textgraph[2]);
@@ -210,7 +226,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		Draw_String(SIZE_X / 2, SIZE_Y / 5, "Shooting");
 		ScreenFlip();// 裏画面の内容を表画面に反映させる
 
-		if (input.PushOneframe_RETURN()) {
+		if (input.PushOneframe_Decide()) {
 			if (select == 0) {
 				PlaySoundMem(material.cursorSE[0], DX_PLAYTYPE_BACK);
 				saveHP = 5;
