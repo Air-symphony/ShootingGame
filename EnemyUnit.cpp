@@ -4,7 +4,6 @@
 const int max = 10;
 class Enemy :public Character {
 private:
-	int enemygraph;
 	int shotgraph[3];
 	int type;
 	Shot shot[max];
@@ -16,7 +15,7 @@ public:
 			GetGraphSize(_enemygraph, &sizeX, &sizeY);
 			sizeX /= 2;
 			sizeY /= 2;
-			enemygraph = _enemygraph;
+			graph = _enemygraph;
 		}
 		else {
 			sizeX = sizeY = 40 / 2;
@@ -46,11 +45,12 @@ public:
 			time--;
 		}
 		if (HP > 0) {
-			Draw(enemygraph);
+			DrawGraph();
 			if (time <= 0 && shotcount < maxshot) {
 				if (!shot[shotcount].Getshot()) {
 					if (type == 1 || type == 3) {
-						int dx = 20;
+						/*正面に来たら打つ*/
+						int dx = 40;//幅
 						if (X - sizeX - dx <= p.GetX() && p.GetX() <= X + sizeX + dx && p.GetY() > Y) {//どのタイミングで打つか
 							shot[shotcount].Set(shotgraph[1], X, Y, type);
 							shotcount++;
@@ -59,11 +59,12 @@ public:
 					}
 					else if (type == 4 || type == 5)
 					{
-						int dx = 100;
+						/*正面に来たら打つ*/
+						int dx = 150 * (type - 3);//幅
 						if (X - sizeX - dx <= p.GetX() && p.GetX() <= X + sizeX + dx && p.GetY() > Y) {//どのタイミングで打つか
 							shot[shotcount].Set(shotgraph[1], X, Y, type);
 							shotcount++;
-							time = 20 + (5 - type) * 10;
+							time = 10 + (5 - type) * 10;
 						}
 					}
 					else if (type == 2) {
@@ -101,9 +102,11 @@ public:
 		}
 		return false;
 	}
-	void Setstatus(int HP, int at, int shotcount) {//shotcount <= 10
+
+	/*shotcount <= 10*/
+	void Setstatus(int HP, int _attack, int shotcount) {
 		SetHP(HP);
-		attack = at;
+		attack = _attack;
 		maxshot = shotcount;
 	}
 	int Getshotcount() {

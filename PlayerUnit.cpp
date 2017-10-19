@@ -7,7 +7,6 @@ const int weaponkind = 3;
 class Player :public Character {
 private:
 	InputKey input;
-	int playergraph;
 	int reloadSE;
 	int shotgraph[3];
 	int shotSE[2];
@@ -19,12 +18,12 @@ private:
 	Shot shots[shotlimit];
 	bool laserwait = false;
 public:
-	Player(int graph, int _shotgraph[], int kind, int _reloadSE, int _shotSE[],int kind2) {
-		if (graph != -1) {
-			GetGraphSize(graph, &sizeX, &sizeY);
+	void Set(int _graph, int _shotgraph[], int kind, int _reloadSE, int _shotSE[],int kind2) {
+		if (_graph != -1) {
+			GetGraphSize(_graph, &sizeX, &sizeY);
 			sizeX /= 2;
 			sizeY /= 2;
-			playergraph = graph;
+			graph = _graph;
 		}
 		else {
 			sizeX = sizeY = 40 / 2;
@@ -80,7 +79,7 @@ public:
 		else if (SIZE_Y - sizeY < Y) {//‰æ–Ê‰º
 			Y = SIZE_Y - sizeY;
 		}
-		Draw(playergraph);
+		DrawGraph();
 	}
 	void Inertia(int fpsspeed) {//‰½ƒtƒŒ[ƒ€‚Å‘¬“x‚ð—Ž‚Æ‚·‚©
 		if (input.Push_KeyUP() && input.Push_KeyDOWN() || laserwait) {

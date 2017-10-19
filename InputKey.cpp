@@ -14,6 +14,7 @@ PAD_INPUT_8 START
 class InputKey {
 private:
 	int id;
+	int joypad;
 	static const int keytype = 7;//1frameÉ{É^ÉìÇÃéÌóﬁ
 	int keytime[keytype];
 	bool PushOneframe(int keyCode) {
@@ -21,14 +22,26 @@ private:
 		else keytime[id] = 0;
 		return keytime[id] == 1;
 	}
-	bool PushOneframe(int PADID, int keyCode) {
-		if ((GetJoypadInputState(PADID) & keyCode) != 0) keytime[id]++;
-		else keytime[id] = 0;
+	bool PushOneframe(int keyCode, int PADID, int PADkeyCode) {
+		if (joypad > 0) {
+			if ((GetJoypadInputState(PADID) & PADkeyCode) != 0) keytime[id]++;
+			else keytime[id] = 0;
+		}
+		else {
+			if (CheckHitKey(keyCode) == 1) keytime[id]++;
+			else keytime[id] = 0;
+		}
 		return keytime[id] == 1;
 	}
-	int joypad = 0;
+	bool PushLong(int keyCode, int PADID, int PADkeyCode) {
+		if (joypad > 0) return (GetJoypadInputState(PADID) & PADkeyCode) != 0;
+		return CheckHitKey(keyCode) == 1;	
+	}
 public:
 	InputKey() {
+		joypad = GetJoypadNum();
+	}
+	void setJoypad() {
 		joypad = GetJoypadNum();
 	}
 	int getJoypad() {
@@ -37,26 +50,22 @@ public:
 	/*0, KEY_INPUT_SPACE*/
 	bool PushOneframe_Decide() {
 		id = 0;
-		if (joypad > 0) return PushOneframe(DX_INPUT_PAD1, PAD_INPUT_1);
-		return PushOneframe(KEY_INPUT_SPACE);
+		return PushOneframe(KEY_INPUT_SPACE, DX_INPUT_PAD1, PAD_INPUT_1);
 	}
 	/*0, KEY_INPUT_SPACE*/
 	bool PushOneframe_Attack() {
 		id = 0;
-		if (joypad > 0) return PushOneframe(DX_INPUT_PAD1, PAD_INPUT_1);
-		return PushOneframe(KEY_INPUT_SPACE);
+		return PushOneframe(KEY_INPUT_SPACE, DX_INPUT_PAD1, PAD_INPUT_1);
 	}
 	/*1, KEY_INPUT_C*/
 	bool PushOneframe_WeaponChange() {
 		id = 1;
-		if (joypad > 0) return PushOneframe(DX_INPUT_PAD1, PAD_INPUT_5);
-		return PushOneframe(KEY_INPUT_C);
+		return PushOneframe(KEY_INPUT_C, DX_INPUT_PAD1, PAD_INPUT_5);
 	}
 	/*2, KEY_INPUT_BACK*/
 	bool PushOneframe_Stop() {
 		id = 2;
-		if (joypad > 0) return PushOneframe(DX_INPUT_PAD1, PAD_INPUT_8);
-		return PushOneframe(KEY_INPUT_BACK);
+		return PushOneframe(KEY_INPUT_BACK, DX_INPUT_PAD1, PAD_INPUT_8);
 	}
 	/*3, KEY_INPUT_R*/
 	bool PushOneframe_Reset() {
@@ -67,42 +76,35 @@ public:
 	/*4, KEY_INPUT_RETURN*/
 	bool PushOneframe_RETURN() {
 		id = 4;
-		if (joypad > 0) return PushOneframe(DX_INPUT_PAD1, PAD_INPUT_7);
-		return PushOneframe(KEY_INPUT_RETURN);
+		return PushOneframe(KEY_INPUT_RETURN, DX_INPUT_PAD1, PAD_INPUT_7);
 	}
 	/*5, KEY_INPUT_UP*/
 	bool PushOneframe_KeyUP() {
 		id = 5;
-		if (joypad > 0) return PushOneframe(DX_INPUT_PAD1, PAD_INPUT_UP);
-		return PushOneframe(KEY_INPUT_UP);
+		return PushOneframe(KEY_INPUT_UP, DX_INPUT_PAD1, PAD_INPUT_UP);
 	}
 	/*6, KEY_INPUT_DOWN*/
 	bool PushOneframe_KeyDOWN() {
 		id = 6;
-		if (joypad > 0) return PushOneframe(DX_INPUT_PAD1, PAD_INPUT_DOWN);
-		return PushOneframe(KEY_INPUT_DOWN);
+		return PushOneframe(KEY_INPUT_DOWN, DX_INPUT_PAD1, PAD_INPUT_DOWN);
 	}
 
 
 	/*CheckHitKey(KEY_INPUT_UP) == 1*/
 	bool Push_KeyUP() {
-		if (joypad > 0) return (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_UP) != 0;
-		return CheckHitKey(KEY_INPUT_UP) == 1;
+		return PushLong(KEY_INPUT_UP, DX_INPUT_PAD1, PAD_INPUT_UP);
 	}
 	/*CheckHitKey(KEY_INPUT_DOWN) == 1*/
 	bool Push_KeyDOWN() {
-		if (joypad > 0) return (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_DOWN) != 0;
-		return CheckHitKey(KEY_INPUT_DOWN) == 1;
+		return PushLong(KEY_INPUT_DOWN, DX_INPUT_PAD1, PAD_INPUT_DOWN);
 	}
 	/*CheckHitKey(KEY_INPUT_LEFT) == 1*/
 	bool Push_KeyLEFT() {
-		if (joypad > 0) return (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_LEFT) != 0;
-		return CheckHitKey(KEY_INPUT_LEFT) == 1;
+		return PushLong(KEY_INPUT_LEFT, DX_INPUT_PAD1, PAD_INPUT_LEFT);
 	}
 	/*CheckHitKey(KEY_INPUT_RIGHT) == 1*/
 	bool Push_KeyRIGHT() {
-		if (joypad > 0) return (GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_RIGHT) != 0;
-		return CheckHitKey(KEY_INPUT_RIGHT) == 1;
+		return PushLong(KEY_INPUT_RIGHT, DX_INPUT_PAD1, PAD_INPUT_RIGHT);
 	}
 	/*ã≠êßèIóπ âüÇ≥ÇÍÇƒÇ»ÇØÇÍÇŒ
 	CheckHitKey(KEY_INPUT_ESCAPE) == 0*/

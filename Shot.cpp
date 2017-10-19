@@ -45,14 +45,17 @@ public:
 	bool PlayerMove() {
 		if (shot) {
 			Draw(graphID);
+			/*直進*/
 			if (type == 0) {
 				Y -= 15;
 			}
+			/*波形*/
 			else if (type == 1) {// || (type == 2) {
 				time += 2;
-				Y -= 10;
-				X += (int)(cos(PI / 45 * time) * 5);
+				Y -= 7;
+				X += (int)(cos(PI / 90 * time) * 5);
 			}
+			/*レーザー*/
 			else if (type == 2) {
 				DrawBox(X - 2, Y, X + 2, 0, GetColor(255, 0, 0), TRUE);
 				Y -= (keepY - 1);
@@ -61,6 +64,7 @@ public:
 		shot = Y > 0;
 		return shot;
 	}
+	/*移動方法*/
 	bool EnemyMove(Unit p) {
 		if (shot) {
 			Draw(graphID);
@@ -73,7 +77,7 @@ public:
 				X += (int)(cos(PI / 90 * time) * 4);
 			}
 			else if (type == 3) {
-				Y += 11;
+				Y += 14;
 			}
 			else if (type == 4) {
 				time += 4;
@@ -81,11 +85,10 @@ public:
 				X += (int)(cos(PI / 45 * time) * 4);
 			}
 			else if (type == 5) {
-				time += 1;
-				time %= 2;//何フレームか
+				time = (time + 1) % 2;//何フレーム毎に
 				Y += 3;
 				if (time == 0) {
-					int dx = 1;
+					int dx = 5;
 					if (abs(p.GetX() - X) < SIZE_X / 2) {
 						if (X - p.GetX() > 0) {
 							dx = -dx;

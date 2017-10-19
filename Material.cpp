@@ -66,4 +66,20 @@ int cursorSE[3];*/
 		cursorSE[2] = LoadSoundMem("Sound\\cursor4.mp3");
 		for (int i = 0; i < 6; i++) textgraph[i] = LoadGraph(textNames[i]);
 	}
+	void DeleteMaterial() {
+		DeleteGraph(playergraph);
+		DeleteGraph(HPgraph);
+		for (int i = 0; i < 5; i++) DeleteGraph(enemygraph[i]);
+		for (int i = 0; i < 3; i++) DeleteGraph(shotgraph[i]);
+
+		DeleteSoundMem(bgm_pre);
+		DeleteSoundMem(bgm_loop);
+		for (int i = 0; i < 2; i++) {
+			DeleteSoundMem(shotSE[i]);
+			DeleteSoundMem(damageSE[i]);
+			DeleteSoundMem(cursorSE[i]);
+		}
+		DeleteSoundMem(cursorSE[2]);
+		for (int i = 0; i < 6; i++) DeleteGraph(textgraph[i]);
+	}
 };
