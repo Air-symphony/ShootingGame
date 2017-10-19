@@ -7,7 +7,7 @@ private:
 	int shotgraph[3];
 	int type;
 	Shot shot[max];
-	int maxshot, shotcount = 0;
+	int maxshot = 0;
 public:
 	void Set(int _enemygraph, int _shotgraph[], int kind, int ty, int x, int y, int speed) {
 		type = ty;
@@ -40,12 +40,13 @@ public:
 		Y = y;
 		movespeed = speed;
 	}
+	/*“®‚«ŠÖŒW*/
 	bool Move(Unit p) {
-		if (time > 0) {
-			time--;
-		}
+		/*’e‚Ì˜A‘±Ëo‹K§*/
+		if (time > 0) time--;
+		/*¶‚«‚Ä‚¢‚é*/
 		if (HP > 0) {
-			DrawGraph();
+			/*Œ‚‚Ä‚éó‘Ô‚È‚ç*/
 			if (time <= 0 && shotcount < maxshot) {
 				if (!shot[shotcount].Getshot()) {
 					if (type == 1 || type == 3) {
@@ -79,6 +80,7 @@ public:
 				X %= SIZE_X;
 			}
 			Y %= SIZE_Y;
+			Draw();
 		}
 		bool hit[max] = { false };
 		for (int i = 0; i < maxshot; i++) {
@@ -109,9 +111,11 @@ public:
 		attack = _attack;
 		maxshot = shotcount;
 	}
+	
 	int Getshotcount() {
 		return shotcount;
 	}
+	
 	bool Getshot(int i) {
 		return shot[i].Getshot();
 	}

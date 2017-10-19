@@ -6,12 +6,15 @@
 
 class Unit {
 public:
+	int graph;//画像ハンドラ
 	int X, Y;//中心
 	int sizeX = 0, sizeY = 0;//中央からの画像サイズ
+	int time = 0;
 
-	void Draw(int graph) {
+	/*画像描画*/
+	void Draw() {
 		X = (X + SIZE_X) % SIZE_X;//画面端の反転
-		if (graph != -1) {// プレイヤーを描画する
+		if (graph != -1) {
 			DrawGraph(X - sizeX,
 				Y - sizeY, graph, TRUE);//左上
 		}
@@ -56,5 +59,8 @@ public:
 	}
 	int GetsizeY() {
 		return sizeY;
+	}
+	int Gettime() {
+		return time;
 	}
 };

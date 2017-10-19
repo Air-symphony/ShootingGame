@@ -14,7 +14,6 @@ private:
 	int weapon;
 	int inertiaX = 0, inertiaY = 0;
 	int inertiaY_time = 0, inertiaX_time = 0;
-	int shotcount = 0;
 	Shot shots[shotlimit];
 	bool laserwait = false;
 public:
@@ -35,26 +34,42 @@ public:
 		for (int i = 0; i < kind2; i++) {
 			shotSE[i] = _shotSE[i];
 		}
-		X = SIZE_X * 2 / 4;
-		Y = SIZE_Y * 5 / 6;
+		SetInit();
 		weapon = 0;
 		movespeed = 5;
 		HP = 5;
 		attack = 1;
 	}
+	/*初期設定
+	X = SIZE_X * 2 / 4;
+		Y = SIZE_Y * 5 / 6;
+		time = shotcount = 0;
+		inertiaX = inertiaY = 0;
+		inertiaY_time = inertiaX_time = 0;*/
+	void SetInit() {
+		X = SIZE_X * 2 / 4;
+		Y = SIZE_Y * 5 / 6;
+		time = shotcount = 0;
+		inertiaX = inertiaY = 0;
+		inertiaY_time = inertiaX_time = 0;
+	}
+	/*描画関係、移動、武器、慣性*/
 	void Move() {
 		if (!laserwait) {
+			/*武器交換*/
 			if (input.PushOneframe_WeaponChange()) {
 				weapon++;
 				weapon %= weaponkind;//武器の数
 				PlaySoundMem(reloadSE, DX_PLAYTYPE_BACK, TRUE);
 			}
+			/*武器火力*/
 			if (weapon == 2) {
 				attack = 3;
 			}
 			else {
 				attack = 1;
 			}
+			/*上下左右の移動*/
 			if (input.Push_KeyUP()) {
 				inertiaY = -movespeed;
 				Y -= movespeed;
@@ -72,16 +87,20 @@ public:
 				X -= movespeed;
 			}
 		}
+		/*慣性移動*/
 		Inertia(3);
+		/*画面上下判定*/
 		if (Y < 0 + sizeY) {//画面上
 			Y = 0 + sizeY;
 		}
 		else if (SIZE_Y - sizeY < Y) {//画面下
 			Y = SIZE_Y - sizeY;
 		}
-		DrawGraph();
+		Draw();
 	}
-	void Inertia(int fpsspeed) {//何フレームで速度を落とすか
+	/*慣性移動
+	fpsspeed = 何フレームで速度を落とすか*/
+	void Inertia(int fpsspeed) {
 		if (input.Push_KeyUP() && input.Push_KeyDOWN() || laserwait) {
 			if (inertiaY != 0) {
 				Y += inertiaY;
@@ -184,9 +203,6 @@ public:
 	}
 	Shot* Getshots() {
 		return shots;
-	}
-	int Getshotcount() {
-		return shotcount;
 	}
 	int Getweapon() {
 		return weapon;

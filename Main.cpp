@@ -41,43 +41,40 @@ int GameSceneCount = 5;
 class Game {
 private:
 	Player player;
-	Enemy enemys[10];
-	int maxcount;
+	int enemyCount;
 
 	bool loopbgm;
-	int saveHP;
-	int saveweapon;
-	int cleartime;//クリア時間の保存
+	bool isClear;
+	int clearTime;//クリア時間の保存
 public:
 	Game(){
 	}
 	/*ゲーム開始時の初期設定*/
 	void init() {
-		loopbgm = false;;
-		saveHP = 5;
-		saveweapon = 0;
+		loopbgm = false;
+		isClear = false;
 		player.Set(material.playergraph, material.shotgraph, 3, material.reloadSE, material.shotSE, 2);
-		cleartime = GetNowCount();
+		player.SetDamageSE(material.damageSE, 2);
+		clearTime = GetNowCount();
 	}
 
-	/*シーンごと初期設定*/
-	void SetGameScene(int scene) {
+	/*ゲーム内容*/
+	bool PlayGame(int scene) {
 		int _stoptime = GetNowCount();
-		player.SetHP(saveHP);
-		player.Setweapon(saveweapon);
-		player.SetDamageSE(material.damageSE, 2);
-
-		maxcount = 5 + scene;//敵の数
-		for (int i = 0; i < maxcount; i++) {
-			enemys[i].Set(material.enemygraph[scene], material.shotgraph, 3, scene, (i + 1) * (SIZE_X / (maxcount + 1)), 100, 2);//横一列
+		player.SetInit();
+		
+		Enemy enemys[10];
+		enemyCount = 5 + scene;//敵の数
+		for (int i = 0; i < enemyCount; i++) {
+			enemys[i].Set(material.enemygraph[scene], material.shotgraph, 3, scene, (i + 1) * (SIZE_X / (enemyCount + 1)), 100, 2);//横一列
 			enemys[i].SetDamageSE(material.damageSE, 2);
 		}
 
 		ClearDrawScreen();// 画面を初期化する
 		/*初期描画内容*/
-		player.DrawGraph();
-		for (int id = 0; id < maxcount; id++) {//enemy[count]の描画
-			enemys[id].DrawGraph();
+		player.Draw();
+		for (int id = 0; id < enemyCount; id++) {//enemy[count]の描画
+			enemys[id].Draw();
 		}
 		for (int i = 0; i < player.GetHP(); i++) {//HP表示
 			DrawGraph(10 + i * 30, SIZE_Y - 50, material.HPgraph, TRUE);//左上
@@ -87,12 +84,7 @@ public:
 
 		while (ProcessMessage() == 0 && input.ForcedTermination() && !input.PushOneframe_Decide()) {}
 		_stoptime = GetNowCount() - _stoptime;
-		cleartime += _stoptime;
-	}
-
-	/*ゲーム内容*/
-	bool PlayGame(int scene) {
-		SetGameScene(scene);
+		clearTime += _stoptime;
 
 		if (CheckSoundMem(material.bgm_pre) == 0 && !loopbgm) {
 			PlaySoundMem(material.bgm_loop, DX_PLAYTYPE_BACK);
@@ -119,11 +111,10 @@ public:
 			/*武器タイプの表示*/
 			DrawFormatString(10 + 5 * 30, SIZE_Y - 60, GetColor(255, 255, 255), "weapon(%d)", player.Getweapon() + 1);
 
-
 			/*敵の数*/
-			int finish = maxcount;
+			int finish = enemyCount;
 			/*敵の動き*/
-			for (int id = 0; id < maxcount; id++) {//enemy[count]の描画
+			for (int id = 0; id < enemyCount; id++) {//enemy[count]の描画
 				if (enemys[id].Move(player)) {//敵の描画と弾発射
 					player.Damege(enemys[id].Getattack());
 				}
@@ -142,9 +133,9 @@ public:
 			}
 			
 			//デバッグ用
-			input.setJoypad();
+			/*input.setJoypad();
 			DrawFormatString(0, 0, GetColor(255, 255, 255), "joypad=%d", input.getJoypad());
-			/*clsDx();
+			clsDx();
 			printfDx("HP=%d, (%d.%d, %d)\n", player.GetHP(), player.GetX(), player.GetY(), player.Getweapon());
 			printfDx("敵(残り%d体)\n", finish);
 			for (int id = 0; id < maxcount; id++) {//enemy[count]の描画
@@ -170,10 +161,10 @@ public:
 					else Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10, material.textgraph[3]);
 					Draw_String("Pause");
 
-					if (input.PushOneframe_RETURN()) {
+					if (input.PushOneframe_Decide()) {
 						if (start) {
 							stoptime = GetNowCount() - stoptime;
-							cleartime = cleartime + stoptime;
+							clearTime = clearTime + stoptime;
 							PlaySoundMem(material.cursorSE[0], DX_PLAYTYPE_BACK);
 							break;
 						}
@@ -198,21 +189,20 @@ public:
 				}
 				/*全てのシーンが終わったら*/
 				else if (scene >= GameSceneCount) {
-					cleartime = GetNowCount() - cleartime;
-					float time = ((float)cleartime / 1000.0);
+					clearTime = GetNowCount() - clearTime;
+					float time = ((float)clearTime / 1000.0);
 					Draw_String(SIZE_X / 2, SIZE_Y / 2 + 50, "Time : %f s", time);
 					Draw_String("Finish");
+					isClear = true;
 					StopSoundMem(material.bgm_loop);
 				}
 				/*途中シーンが終わったら*/
 				else {
-					saveHP = player.GetHP();
-					saveweapon = player.Getweapon();
 					Draw_String("Next Stage");
 				}
 				int waittime = 1000;
 				WaitTimer(waittime);//1秒待機
-				cleartime += waittime;
+				clearTime += waittime;
 				return player.GetHP() > 0;
 			}
 		}
@@ -220,7 +210,10 @@ public:
 	}
 
 	int getCleartime() {
-		return cleartime;
+		return clearTime;
+	}
+	bool getClear() {
+		return isClear;
 	}
 };
 
@@ -242,7 +235,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	FileReader fileReader;
 	Game game;
 	input.setJoypad();
-	int select = 0;//startにカーソルがあるかどうか
+	int select = 0;//カーソルの位置
 	while (ProcessMessage() == 0 && input.ForcedTermination()) {
 		ClearDrawScreen();// 画面を初期化する
 		clsDx();
@@ -282,7 +275,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					}
 				}
 				/*強制終了の場合は無し*/
-				if (input.ForcedTermination()) {
+				if (input.ForcedTermination() && game.getClear()) {
 					int rank = fileReader.CheckInRanking((double)game.getCleartime() / 1000.0);
 					PrintRanking(fileReader, rank);
 				}
@@ -307,18 +300,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 /*ランキングの表示
 0 <= rank <= 9 ランキング入り*/
 void PrintRanking(FileReader fileReader, int rank) {
-	float _rank[10];
+	float rankData[10];
 	for (int i = 0; i < fileReader.getRANKING(); i++) {
-		_rank[i] = fileReader.rank[i];
+		rankData[i] = fileReader.rank[i];
 	}
 
 	ClearDrawScreen();// 画面を初期化する
 	for (int i = 0; i < fileReader.getRANKING(); i++) {
 		DrawFormatString(SIZE_X / 3 - 20, 100 + 40 * i, GetColor(255, 255, 255), "%d位:", i + 1);
-		DrawFormatString(SIZE_X / 3 + 80, 100 + 40 * i, GetColor(255, 255, 255), "%f", _rank[i]);
+		DrawFormatString(SIZE_X / 3 + 80, 100 + 40 * i, GetColor(255, 255, 255), "%f", rankData[i]);
 	}
 	if (0 <= rank) {
-		DrawFormatString(SIZE_X / 3 + 80, 100 + 40 * rank, GetColor(0, 255, 255), "%f", _rank[rank]);
+		DrawFormatString(SIZE_X / 3 + 80, 100 + 40 * rank, GetColor(0, 255, 255), "%f", rankData[rank]);
 		fileReader.UpdateFile();
 	}
 	ScreenFlip();// 裏画面の内容を表画面に反映させる
