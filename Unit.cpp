@@ -13,7 +13,7 @@ public:
 	void Draw() {
 		X = (X + SIZE_X) % SIZE_X;//‰æ–Ê’[‚Ì”½“]
 		if (graphID != -1) {
-			Draw_Graph(X, Y, 5);
+			Draw_Graph(X, Y);
 		}
 		else {
 			Draw_GreenBox();

@@ -8,7 +8,7 @@ class Player :public Character {
 private:
 	InputKey input;
 	int reloadSE;
-	int shotgraph[3];
+	Graph shotgraph[3];
 	int shotSE[2];
 
 	int weapon;
@@ -17,15 +17,12 @@ private:
 	Shot shots[shotlimit];
 	bool laserwait = false;
 public:
-	void Set(int _graph, int _shotgraph[], int kind, int _reloadSE, int _shotSE[],int kind2) {
-		if (_graph != -1) {
-			SetGraph(_graph);
-		}
-		else {
+	void Set(Graph _graph, Graph _shotgraph[], int kind, int _reloadSE, int _shotSE[],int kind2) {
+		if(!SetGraph(_graph)){
 			sizeX = sizeY = 40 / 2;
 		}
 		for (int i = 0; i < kind; i++) {
-			shotgraph[i] = _shotgraph[i];
+			shotgraph[i].SetGraph(_shotgraph[i]);
 		}
 		reloadSE = _reloadSE;
 		for (int i = 0; i < kind2; i++) {

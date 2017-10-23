@@ -4,21 +4,18 @@
 const int max = 10;
 class Enemy :public Character {
 private:
-	int shotgraph[3];
+	Graph shotgraph[3];
 	int type;
 	Shot shot[max];
 	int maxshot = 0;
 public:
-	void Set(int _enemygraph, int _shotgraph[], int kind, int ty, int x, int y, int speed) {
+	void Set(Graph _enemygraph, Graph _shotgraph[], int kind, int ty, int x, int y, int speed) {
 		type = ty;
-		if (_enemygraph != -1) {
-			SetGraph(_enemygraph);
-		}
-		else {
+		if (!SetGraph(_enemygraph)) {
 			sizeX = sizeY = 40 / 2;
 		}
 		for (int i = 0; i < kind; i++) {
-			shotgraph[i] = _shotgraph[i];
+			shotgraph[i].SetGraph(_shotgraph[i]);
 		}
 		HP = type;
 		if (type == 1) {

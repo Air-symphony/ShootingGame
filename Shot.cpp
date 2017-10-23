@@ -8,11 +8,8 @@ private:
 	int type;
 	int keepY = 0;
 public:
-	void Set(int _graph, int x, int y, int t) {
-		if (_graph != -1) {
-			SetGraph(_graph);
-		}
-		else {
+	void Set(Graph _graph, int x, int y, int t) {
+		if (!SetGraph(_graph)) {
 			sizeX = sizeY = 20 / 2;
 		}
 		X = x;

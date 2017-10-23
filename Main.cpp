@@ -24,16 +24,7 @@ void Draw_String(char str[]) {
 	DrawString(SIZE_X / 2 - StrWidth / 2, SIZE_Y / 2, str, GetColor(255, 255, 255));
 	ScreenFlip();// 裏画面の内容を表画面に反映させる
 }
-void Draw_Graph(int x, int y, int graph) {
-	int sizeX, sizeY;
-	if (graph != -1) {
-		GetGraphSize(graph, &sizeX, &sizeY);
-	}
-	else {
-		sizeX = sizeY = 100;
-	}
-	DrawGraph(x - sizeX / 2, y - sizeY / 2, graph, TRUE);
-}
+
 void PrintRanking(FileReader fileReader, int rank);
 
 int GameSceneCount = 5;
@@ -53,7 +44,7 @@ public:
 	void init() {
 		loopbgm = false;
 		isClear = false;
-		player.Set(material.playergraph, material.shotgraph, 3, material.reloadSE, material.shotSE, 2);
+		player.Set(material.player, material.shot, 3, material.reloadSE, material.shotSE, 2);
 		player.SetDamageSE(material.damageSE, 2);
 		clearTime = GetNowCount();
 	}
@@ -66,7 +57,7 @@ public:
 		Enemy enemys[10];
 		enemyCount = 5 + scene;//敵の数
 		for (int i = 0; i < enemyCount; i++) {
-			enemys[i].Set(material.enemygraph[scene], material.shotgraph, 3, scene, (i + 1) * (SIZE_X / (enemyCount + 1)), 100, 2);//横一列
+			enemys[i].Set(material.enemy[scene], material.shot, 3, scene, (i + 1) * (SIZE_X / (enemyCount + 1)), 100, 2);//横一列
 			enemys[i].SetDamageSE(material.damageSE, 2);
 		}
 
@@ -77,7 +68,7 @@ public:
 			enemys[id].Draw();
 		}
 		for (int i = 0; i < player.GetHP(); i++) {//HP表示
-			DrawGraph(10 + i * 30, SIZE_Y - 50, material.HPgraph, TRUE);//左上
+			material.HP.Draw_Graph(10 + i * 30, SIZE_Y - 50);
 		}
 		Draw_String("Please push SPACE");
 		ScreenFlip();// 裏画面の内容を表画面に反映させる 
@@ -109,9 +100,8 @@ public:
 			player.Shoot();
 
 			/*武器タイプの表示*/
-			Draw_Graph(SIZE_X - 20, SIZE_Y - 20, material.weapongraph[player.Getweapon()]);
-			//DrawFormatString(10 + 5 * 30, SIZE_Y - 60, GetColor(255, 255, 255), "weapon(%d)", player.Getweapon() + 1);
-
+			material.weapon[player.Getweapon()].Draw_Graph(SIZE_X, SIZE_Y, 9);
+			
 			/*敵の数*/
 			int finish = enemyCount;
 			/*敵の動き*/
@@ -130,7 +120,8 @@ public:
 			}
 
 			for (int i = 0; i < player.GetHP(); i++) {//HP表示
-				DrawGraph(10 + i * 30, SIZE_Y - 50, material.HPgraph, TRUE);//左上
+				material.HP.Draw_Graph(10 + i * 30, SIZE_Y - 50);
+				//DrawGraph(10 + i * 30, SIZE_Y - 50, material.HPgraph, TRUE);//左上
 			}
 			
 			//デバッグ用
@@ -156,10 +147,10 @@ public:
 						PlaySoundMem(material.cursorSE[2], DX_PLAYTYPE_BACK);
 						start = !start;
 					}
-					Draw_Graph(SIZE_X / 2, SIZE_Y * 3 / 5, material.textgraph[0]);
-					Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10, material.textgraph[2]);
-					if (start) Draw_Graph(SIZE_X / 2, SIZE_Y * 3 / 5, material.textgraph[1]);
-					else Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10, material.textgraph[3]);
+					material.menu_Start[0].Draw_Graph(SIZE_X / 2, SIZE_Y * 3 / 5);
+					material.menu_Finish[0].Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10);
+					if (start) material.menu_Start[1].Draw_Graph(SIZE_X / 2, SIZE_Y * 3 / 5);
+					else material.menu_Finish[1].Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10);
 					Draw_String("Pause");
 
 					if (input.PushOneframe_Decide()) {
@@ -254,14 +245,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		DrawFormatString(0, 0, GetColor(255, 255, 255), "joypad=%d", input.getJoypad());
 
-		Draw_Graph(SIZE_X / 2, SIZE_Y * 5 / 10, material.textgraph[0]);
-		Draw_Graph(SIZE_X / 2, SIZE_Y * 6 / 10, material.textgraph[4]);
-		Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10, material.textgraph[2]);
-		if (select == 0) Draw_Graph(SIZE_X / 2, SIZE_Y * 5 / 10, material.textgraph[1]);
-		else if (select == 1)Draw_Graph(SIZE_X / 2, SIZE_Y * 6 / 10, material.textgraph[5]);
-		else Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10, material.textgraph[3]);
+		material.menu_Start[0].Draw_Graph(SIZE_X / 2, SIZE_Y * 5 / 10);
+		material.menu_Ranking[0].Draw_Graph(SIZE_X / 2, SIZE_Y * 6 / 10);
+		material.menu_Finish[0].Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10);
+
+		if (select == 0) material.menu_Start[1].Draw_Graph(SIZE_X / 2, SIZE_Y * 5 / 10);
+		else if (select == 1)material.menu_Ranking[1].Draw_Graph(SIZE_X / 2, SIZE_Y * 6 / 10);
+		else material.menu_Finish[1].Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10);
 
 		Draw_String(SIZE_X / 2, SIZE_Y / 5, "Shooting");
+		
 		ScreenFlip();// 裏画面の内容を表画面に反映させる
 
 		if (input.PushOneframe_Decide()) {
