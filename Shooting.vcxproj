@@ -156,6 +156,7 @@
     <ClCompile Include="Display.cpp" />
     <ClCompile Include="EnemyUnit.cpp" />
     <ClCompile Include="FileReader.cpp" />
+    <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="InputKey.cpp" />
     <ClCompile Include="Main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

@@ -10,10 +10,7 @@ private:
 public:
 	void Set(int _graph, int x, int y, int t) {
 		if (_graph != -1) {
-			graph = _graph;
-			GetGraphSize(_graph, &sizeX, &sizeY);
-			sizeX /= 2;
-			sizeY /= 2;
+			SetGraph(_graph);
 		}
 		else {
 			sizeX = sizeY = 20 / 2;
@@ -26,10 +23,7 @@ public:
 	}
 	void Set(int _graph, int x, int y, int ty, int ti) {
 		if (_graph != -1) {
-			graph = _graph;
-			GetGraphSize(_graph, &sizeX, &sizeY);
-			sizeX /= 2;
-			sizeY /= 2;
+			SetGraph(_graph);
 		}
 		else {
 			sizeX = sizeY = 20 / 2;

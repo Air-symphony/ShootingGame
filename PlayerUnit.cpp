@@ -19,10 +19,7 @@ private:
 public:
 	void Set(int _graph, int _shotgraph[], int kind, int _reloadSE, int _shotSE[],int kind2) {
 		if (_graph != -1) {
-			GetGraphSize(_graph, &sizeX, &sizeY);
-			sizeX /= 2;
-			sizeY /= 2;
-			graph = _graph;
+			SetGraph(_graph);
 		}
 		else {
 			sizeX = sizeY = 40 / 2;

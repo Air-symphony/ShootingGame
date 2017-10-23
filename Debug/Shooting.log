@@ -1,7 +1,19 @@
-﻿  PlayerUnit.cpp
+﻿  Shot.cpp
+  PlayerUnit.cpp
+  Material.cpp
+  InputKey.cpp
+  Graphics.cpp
+  FileReader.cpp
+c:\users\admin\documents\visual studio 2015\projects\shooting\filereader.cpp(53): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+  EnemyUnit.cpp
+  Display.cpp
+  Character.cpp
+  コードを生成中...
+  Unit.cpp
   Main.cpp
 c:\users\admin\documents\visual studio 2015\projects\shooting\filereader.cpp(53): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-c:\users\admin\documents\visual studio 2015\projects\shooting\main.cpp(195): warning C4244: '初期化中': 'double' から 'float' への変換です。データが失われる可能性があります。
-c:\users\admin\documents\visual studio 2015\projects\shooting\main.cpp(196): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
-  Shooting.vcxproj -> C:\Users\admin\Documents\Visual Studio 2015\Projects\Shooting\Debug\Shooting.exe
-  Shooting.vcxproj -> C:\Users\admin\Documents\Visual Studio 2015\Projects\Shooting\Debug\Shooting.pdb (Full PDB)
+c:\users\admin\documents\visual studio 2015\projects\shooting\main.cpp(194): warning C4244: '初期化中': 'double' から 'float' への変換です。データが失われる可能性があります。
+c:\users\admin\documents\visual studio 2015\projects\shooting\main.cpp(195): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
+  コードを生成中...
+  Shooting.vcxproj -> C:\Users\admin\documents\visual studio 2015\Projects\Shooting\Debug\Shooting.exe
+  Shooting.vcxproj -> C:\Users\admin\documents\visual studio 2015\Projects\Shooting\Debug\Shooting.pdb (Full PDB)

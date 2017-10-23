@@ -1,5 +1,5 @@
 #pragma once
-#include "Dxlib.h"
+#include "Graphics.cpp"
 
 /*
 int playergraph;
@@ -31,8 +31,10 @@ public:
 	int damageSE[2];
 	int cursorSE[3];
 	char textNames[6][140] = { "Picture\\start_1.png", "Picture\\Start_2.png", "Picture\\Finish_1.png","Picture\\Finish_2.png",
-		"Picture\\About_1.png", "Picture\\About_2.png" };
+		"Picture\\Ranking_1.png", "Picture\\Ranking_2.png" };
 	int textgraph[6];
+	char weaponNames[3][140] = { "Picture\\Weapon_1.png", "Picture\\Weapon_2.png", "Picture\\Weapon_3.png"};
+	int weapongraph[3];
 
 	//‘Š‘ÎƒpƒX
 	Material() {
@@ -65,6 +67,7 @@ int cursorSE[3];*/
 		cursorSE[1] = LoadSoundMem("Sound\\cancel1.mp3");
 		cursorSE[2] = LoadSoundMem("Sound\\cursor4.mp3");
 		for (int i = 0; i < 6; i++) textgraph[i] = LoadGraph(textNames[i]);
+		for (int i = 0; i < 3; i++) weapongraph[i] = LoadGraph(weaponNames[i]);
 	}
 	void DeleteMaterial() {
 		DeleteGraph(playergraph);
@@ -81,5 +84,6 @@ int cursorSE[3];*/
 		}
 		DeleteSoundMem(cursorSE[2]);
 		for (int i = 0; i < 6; i++) DeleteGraph(textgraph[i]);
+		for (int i = 0; i < 3; i++) DeleteGraph(weapongraph[i]);
 	}
 };

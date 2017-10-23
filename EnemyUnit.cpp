@@ -12,10 +12,7 @@ public:
 	void Set(int _enemygraph, int _shotgraph[], int kind, int ty, int x, int y, int speed) {
 		type = ty;
 		if (_enemygraph != -1) {
-			GetGraphSize(_enemygraph, &sizeX, &sizeY);
-			sizeX /= 2;
-			sizeY /= 2;
-			graph = _enemygraph;
+			SetGraph(_enemygraph);
 		}
 		else {
 			sizeX = sizeY = 40 / 2;

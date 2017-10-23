@@ -1,22 +1,19 @@
 #pragma once
 #include "Display.cpp"
-#include "Dxlib.h"
+#include "Graphics.cpp"
 #include <math.h>
 #define PI 3.14159
 
-class Unit {
+class Unit :public Graph{
 public:
-	int graph;//画像ハンドラ
 	int X, Y;//中心
-	int sizeX = 0, sizeY = 0;//中央からの画像サイズ
 	int time = 0;
 
 	/*画像描画*/
 	void Draw() {
 		X = (X + SIZE_X) % SIZE_X;//画面端の反転
-		if (graph != -1) {
-			DrawGraph(X - sizeX,
-				Y - sizeY, graph, TRUE);//左上
+		if (graphID != -1) {
+			Draw_Graph(X, Y, 5);
 		}
 		else {
 			Draw_GreenBox();
@@ -53,12 +50,6 @@ public:
 	}
 	int GetY() {
 		return Y;
-	}
-	int GetsizeX() {
-		return sizeX;
-	}
-	int GetsizeY() {
-		return sizeY;
 	}
 	int Gettime() {
 		return time;

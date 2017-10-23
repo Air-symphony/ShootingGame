@@ -109,7 +109,8 @@ public:
 			player.Shoot();
 
 			/*武器タイプの表示*/
-			DrawFormatString(10 + 5 * 30, SIZE_Y - 60, GetColor(255, 255, 255), "weapon(%d)", player.Getweapon() + 1);
+			Draw_Graph(SIZE_X - 20, SIZE_Y - 20, material.weapongraph[player.Getweapon()]);
+			//DrawFormatString(10 + 5 * 30, SIZE_Y - 60, GetColor(255, 255, 255), "weapon(%d)", player.Getweapon() + 1);
 
 			/*敵の数*/
 			int finish = enemyCount;
