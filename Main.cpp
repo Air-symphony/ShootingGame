@@ -1,3 +1,4 @@
+#pragma once
 #include "InputKey.cpp"
 #include "Material.cpp"
 #include "PlayerUnit.cpp"
@@ -18,6 +19,12 @@ void Draw_String(int x, int y, char str[], int item) {//flip無し
 	int StrWidth = GetDrawStringWidth(str, StrLen);
 	DrawFormatString(x - StrWidth / 2, y, GetColor(255, 255, 255), str, item);
 }
+void Draw_String(int x, int y, char str[], double item) {//flip無し
+	int StrLen = strlen(str);
+	int StrWidth = GetDrawStringWidth(str, StrLen);
+	DrawFormatString(x - StrWidth / 2, y, GetColor(255, 255, 255), str, item);
+}
+/*フリップあり*/
 void Draw_String(char str[]) {
 	int StrLen = strlen(str);
 	int StrWidth = GetDrawStringWidth(str, StrLen);
@@ -57,7 +64,7 @@ public:
 		Enemy enemys[10];
 		enemyCount = 5 + scene;//敵の数
 		for (int i = 0; i < enemyCount; i++) {
-			enemys[i].Set(material.enemy[scene], material.shot, 3, scene, (i + 1) * (SIZE_X / (enemyCount + 1)), 100, 2);//横一列
+			enemys[i].Set(material.enemy[scene - 1], material.shot, 3, scene, (i + 1) * (SIZE_X / (enemyCount + 1)), 100, 2);//横一列
 			enemys[i].SetDamageSE(material.damageSE, 2);
 		}
 
@@ -68,9 +75,9 @@ public:
 			enemys[id].Draw();
 		}
 		for (int i = 0; i < player.GetHP(); i++) {//HP表示
-			material.HP.Draw_Graph(10 + i * 30, SIZE_Y - 50);
+			material.HP.Draw_Graph(10 + i * 30, SIZE_Y - 50, 1);
 		}
-		Draw_String("Please push SPACE");
+		Draw_String("Please Push\nSPACE or A");
 		ScreenFlip();// 裏画面の内容を表画面に反映させる 
 
 		while (ProcessMessage() == 0 && input.ForcedTermination() && !input.PushOneframe_Decide()) {}
@@ -120,8 +127,7 @@ public:
 			}
 
 			for (int i = 0; i < player.GetHP(); i++) {//HP表示
-				material.HP.Draw_Graph(10 + i * 30, SIZE_Y - 50);
-				//DrawGraph(10 + i * 30, SIZE_Y - 50, material.HPgraph, TRUE);//左上
+				material.HP.Draw_Graph(10 + i * 30, SIZE_Y - 50, 1);
 			}
 			
 			//デバッグ用
@@ -139,7 +145,6 @@ public:
 			}*/
 
 			if (input.PushOneframe_Stop()) {
-				//Draw_String(SIZE_X / 2, SIZE_Y * 3 / 5, "BACKSPACE：Continue\nSPACE：Go back Title");
 				while (ProcessMessage() == 0 && input.ForcedTermination()) {
 					int stoptime = GetNowCount();
 					if (input.PushOneframe_KeyUP() ||
@@ -182,8 +187,8 @@ public:
 				/*全てのシーンが終わったら*/
 				else if (scene >= GameSceneCount) {
 					clearTime = GetNowCount() - clearTime;
-					float time = ((float)clearTime / 1000.0);
-					Draw_String(SIZE_X / 2, SIZE_Y / 2 + 50, "Time : %f s", time);
+					double time = (((double)clearTime) / 1000.0);
+					Draw_String(SIZE_X / 2, SIZE_Y / 2 + 50, "Time : %lf s", time);
 					Draw_String("Finish");
 					isClear = true;
 					StopSoundMem(material.bgm_loop);
@@ -226,11 +231,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	FileReader fileReader;
 	Game game;
-	input.setJoypad();
 	int select = 0;//カーソルの位置
 	while (ProcessMessage() == 0 && input.ForcedTermination()) {
 		ClearDrawScreen();// 画面を初期化する
 		clsDx();
+		input.setJoypad();
 
 		if (input.PushOneframe_KeyUP()) {
 			PlaySoundMem(material.cursorSE[2], DX_PLAYTYPE_BACK);
@@ -253,7 +258,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if (select == 1)material.menu_Ranking[1].Draw_Graph(SIZE_X / 2, SIZE_Y * 6 / 10);
 		else material.menu_Finish[1].Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10);
 
-		Draw_String(SIZE_X / 2, SIZE_Y / 5, "Shooting");
+		Draw_String(SIZE_X / 2, SIZE_Y / 5, "Shooting Star");
 		
 		ScreenFlip();// 裏画面の内容を表画面に反映させる
 
@@ -269,7 +274,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					}
 				}
 				/*強制終了の場合は無し*/
-				if (input.ForcedTermination() && game.getClear()) {
+				if (game.getClear()) {
 					int rank = fileReader.CheckInRanking((double)game.getCleartime() / 1000.0);
 					PrintRanking(fileReader, rank);
 				}
