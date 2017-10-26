@@ -10,7 +10,9 @@ c:\users\admin\documents\visual studio 2015\projects\shooting\FileReader.cpp(53)
   Material.cpp
   PlayerUnit.cpp
   Shot.cpp
-  Source1.cpp
   Unit.cpp
-Source1.obj : error LNK2005: _WinMain@16 は既に Main.obj で定義されています。
-C:\Users\admin\documents\visual studio 2015\Projects\Shooting\Release\Shooting.exe : fatal error LNK1169: 1 つ以上の複数回定義されているシンボルが見つかりました。
+  コード生成しています。
+  All 86 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  コード生成が終了しました。
+  Shooting.vcxproj -> C:\Users\admin\documents\visual studio 2015\Projects\Shooting\Release\Shooting.exe
+  Shooting.vcxproj -> C:\Users\admin\documents\visual studio 2015\Projects\Shooting\Release\Shooting.pdb (Full PDB)

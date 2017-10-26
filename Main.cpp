@@ -9,33 +9,66 @@
 InputKey input;
 Material material;
 
-void Draw_String(int x, int y, char str[]) {//flip無し
+/*文字の高さの取得*/
+int fontsize = 40;
+
+/*
+fontsize = size;
+SetFontSize(fontsize);
+*/
+void FontSize(int size) {
+	fontsize = size;
+	SetFontSize(fontsize);
+}
+/*
+x, y = 画像を表示させたい座標
+str = 文字列
+number = 特定の位置を中心として表示(テンキー)
+*/
+void Draw_String(int x, int y, char str[], int number = 5) {//flip無し
 	int StrLen = strlen(str);
 	int StrWidth = GetDrawStringWidth(str, StrLen);
-	DrawString(x - StrWidth / 2, y, str, GetColor(255, 255, 255));
+	if (number == 1)
+		DrawString(x, y, str, GetColor(255, 255, 255));
+	else if (number == 2)
+		DrawString(x - StrWidth / 2, y, str, GetColor(255, 255, 255));
+	else if (number == 3)
+		DrawString(x - StrWidth, y, str, GetColor(255, 255, 255));
+	else if (number == 4)
+		DrawString(x, y - fontsize / 2, str, GetColor(255, 255, 255));
+	else if (number == 5)
+		DrawString(x - StrWidth / 2, y - fontsize / 2, str, GetColor(255, 255, 255));
+	else if (number == 6)
+		DrawString(x - StrWidth, y - fontsize / 2, str, GetColor(255, 255, 255));
+	else if (number == 7)
+		DrawString(x, y - fontsize, str, GetColor(255, 255, 255));
+	else if (number == 8)
+		DrawString(x - StrWidth / 2, y - fontsize, str, GetColor(255, 255, 255));
+	else if (number == 9)
+		DrawString(x - StrWidth, y - fontsize, str, GetColor(255, 255, 255));
 }
-void Draw_String(int x, int y, char str[], int item) {//flip無し
+/*
+DrawFormatString(x - StrWidth / 2, y - fontsize / 2, GetColor(255, 255, 255), str, item);
+*/
+void Draw_String(int x, int y, char str[], double item) {
 	int StrLen = strlen(str);
 	int StrWidth = GetDrawStringWidth(str, StrLen);
-	DrawFormatString(x - StrWidth / 2, y, GetColor(255, 255, 255), str, item);
+	DrawFormatString(x - StrWidth / 2, y - fontsize / 2, GetColor(255, 255, 255), str, item);
 }
-void Draw_String(int x, int y, char str[], double item) {//flip無し
-	int StrLen = strlen(str);
-	int StrWidth = GetDrawStringWidth(str, StrLen);
-	DrawFormatString(x - StrWidth / 2, y, GetColor(255, 255, 255), str, item);
-}
-/*フリップあり*/
+/*
+DrawString(SIZE_X / 2 - StrWidth / 2, SIZE_Y / 2 - fontsize / 2, str, GetColor(255, 255, 255));
+ScreenFlip();
+*/
 void Draw_String(char str[]) {
 	int StrLen = strlen(str);
 	int StrWidth = GetDrawStringWidth(str, StrLen);
-	DrawString(SIZE_X / 2 - StrWidth / 2, SIZE_Y / 2, str, GetColor(255, 255, 255));
+	DrawString(SIZE_X / 2 - StrWidth / 2, SIZE_Y / 2 - fontsize / 2, str, GetColor(255, 255, 255));
 	ScreenFlip();// 裏画面の内容を表画面に反映させる
 }
 
 void PrintRanking(FileReader fileReader, int rank);
 
 int GameSceneCount = 5;
-
 class Game {
 private:
 	Player player;
@@ -77,7 +110,11 @@ public:
 		for (int i = 0; i < player.GetHP(); i++) {//HP表示
 			material.HP.Draw_Graph(10 + i * 30, SIZE_Y - 50, 1);
 		}
-		Draw_String("Please Push\nSPACE or A");
+		/*入力待ち*/
+		Draw_String(SIZE_X / 2, SIZE_Y / 2, "Please Push", 8);
+		if (input.getJoypad() > 0) Draw_String(SIZE_X/ 2, SIZE_Y / 2, "A", 2);
+		else Draw_String(SIZE_X / 2, SIZE_Y / 2, "SPACE", 2);
+
 		ScreenFlip();// 裏画面の内容を表画面に反映させる 
 
 		while (ProcessMessage() == 0 && input.ForcedTermination() && !input.PushOneframe_Decide()) {}
@@ -199,7 +236,8 @@ public:
 				}
 				int waittime = 1000;
 				WaitTimer(waittime);//1秒待機
-				clearTime += waittime;
+				if (!isClear) clearTime += waittime;
+
 				return player.GetHP() > 0;
 			}
 		}
@@ -227,7 +265,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	material.SetMatrial();
-	SetFontSize(40);
+	FontSize(40);
 
 	FileReader fileReader;
 	Game game;
@@ -247,8 +285,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			select += 1;
 			select %= 3;
 		}
-
-		DrawFormatString(0, 0, GetColor(255, 255, 255), "joypad=%d", input.getJoypad());
+	
+		FontSize(60);
+		Draw_String(SIZE_X / 2, SIZE_Y / 4, "Shooting Star");
 
 		material.menu_Start[0].Draw_Graph(SIZE_X / 2, SIZE_Y * 5 / 10);
 		material.menu_Ranking[0].Draw_Graph(SIZE_X / 2, SIZE_Y * 6 / 10);
@@ -258,7 +297,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else if (select == 1)material.menu_Ranking[1].Draw_Graph(SIZE_X / 2, SIZE_Y * 6 / 10);
 		else material.menu_Finish[1].Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10);
 
-		Draw_String(SIZE_X / 2, SIZE_Y / 5, "Shooting Star");
+		FontSize(20);
+		if (input.getJoypad() > 0) Draw_String(SIZE_X, SIZE_Y, "JoyPad connected.", 9);
+		else Draw_String(SIZE_X, SIZE_Y, "JoyPad didn't connect.", 9);
+		FontSize(40);
 		
 		ScreenFlip();// 裏画面の内容を表画面に反映させる
 

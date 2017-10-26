@@ -164,9 +164,6 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="PlayerUnit.cpp" />
     <ClCompile Include="Shot.cpp" />
-    <ClCompile Include="Source1.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Unit.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
