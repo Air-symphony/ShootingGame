@@ -3,7 +3,7 @@
 #include "Material.cpp"
 #include "PlayerUnit.cpp"
 #include "EnemyUnit.cpp"
-#include "FileReader.cpp"
+#include "Client.cpp"
 #include <iostream>
 
 InputKey input;
@@ -66,7 +66,7 @@ void Draw_String(char str[]) {
 	ScreenFlip();// 裏画面の内容を表画面に反映させる
 }
 
-void PrintRanking(FileReader fileReader, int rank);
+void PrintRanking(ClientSocket socket, int rank);
 
 int GameSceneCount = 5;
 class Game {
@@ -267,7 +267,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	material.SetMatrial();
 	FontSize(40);
 
-	FileReader fileReader;
+	//FileReader fileReader;
+	ClientSocket socket;
+	
 	Game game;
 	int select = 0;//カーソルの位置
 	while (ProcessMessage() == 0 && input.ForcedTermination()) {
@@ -317,14 +319,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				}
 				/*強制終了の場合は無し*/
 				if (game.getClear()) {
-					int rank = fileReader.CheckInRanking((double)game.getCleartime() / 1000.0);
-					PrintRanking(fileReader, rank);
+					int rank = socket.CheckInRanking((double)game.getCleartime() / 1000.0);
+					PrintRanking(socket, rank);
 				}
 			}
 			/*Ranking*/
 			else if (select == 1) {
 				PlaySoundMem(material.cursorSE[0], DX_PLAYTYPE_BACK);
-				PrintRanking(fileReader, -1);
+				PrintRanking(socket, -1);
 			}
 			/*Finish*/
 			else {
@@ -340,20 +342,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 /*ランキングの表示
 0 <= rank <= 9 ランキング入り*/
-void PrintRanking(FileReader fileReader, int rank) {
+void PrintRanking(ClientSocket socket, int rank) {
 	float rankData[10];
-	for (int i = 0; i < fileReader.getRANKING(); i++) {
-		rankData[i] = fileReader.rank[i];
+	for (int i = 0; i < socket.getRANKING(); i++) {
+		rankData[i] = socket.RankingData[i];
 	}
 
 	ClearDrawScreen();// 画面を初期化する
-	for (int i = 0; i < fileReader.getRANKING(); i++) {
+	for (int i = 0; i < socket.getRANKING(); i++) {
 		DrawFormatString(SIZE_X / 3 - 20, 100 + 40 * i, GetColor(255, 255, 255), "%d位:", i + 1);
 		DrawFormatString(SIZE_X / 3 + 80, 100 + 40 * i, GetColor(255, 255, 255), "%f", rankData[i]);
 	}
 	if (0 <= rank) {
 		DrawFormatString(SIZE_X / 3 + 80, 100 + 40 * rank, GetColor(0, 255, 255), "%f", rankData[rank]);
-		fileReader.UpdateFile();
+		socket.UpdateData();
 	}
 	ScreenFlip();// 裏画面の内容を表画面に反映させる
 	while (ProcessMessage() == 0 && input.ForcedTermination()) {

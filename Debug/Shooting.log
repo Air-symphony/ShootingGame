@@ -1,4 +1,11 @@
-﻿  Main.cpp
-c:\users\admin\documents\visual studio 2015\projects\shooting\filereader.cpp(53): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+﻿  Client.cpp
+c:\users\admin\documents\visual studio 2015\projects\shooting\client.cpp(48): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+c:\users\admin\documents\visual studio 2015\projects\shooting\client.cpp(34): warning C4101: 'string': ローカル変数は 1 度も使われていません。
+c:\users\admin\documents\visual studio 2015\projects\shooting\client.cpp(78): warning C4101: 'text': ローカル変数は 1 度も使われていません。
+c:\users\admin\documents\visual studio 2015\projects\shooting\client.cpp(103): warning C4101: 'text': ローカル変数は 1 度も使われていません。
+c:\users\admin\documents\visual studio 2015\projects\shooting\client.cpp(131): warning C4101: 'text': ローカル変数は 1 度も使われていません。
+c:\users\admin\documents\visual studio 2015\projects\shooting\client.cpp(144): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+  スキップ中... (関連する変更は検出されませんでした)
+  Unit.cpp
   Shooting.vcxproj -> C:\Users\admin\documents\visual studio 2015\Projects\Shooting\Debug\Shooting.exe
   Shooting.vcxproj -> C:\Users\admin\documents\visual studio 2015\Projects\Shooting\Debug\Shooting.pdb (Full PDB)

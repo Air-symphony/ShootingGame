@@ -1,18 +1,21 @@
-﻿  Character.cpp
-  Display.cpp
-  EnemyUnit.cpp
-  FileReader.cpp
-FileReader.cpp(53): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-  Graphics.cpp
-  InputKey.cpp
+﻿  Client.cpp
+Client.cpp(48): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+Client.cpp(34): warning C4101: 'string': ローカル変数は 1 度も使われていません。
+Client.cpp(78): warning C4101: 'text': ローカル変数は 1 度も使われていません。
+Client.cpp(103): warning C4101: 'text': ローカル変数は 1 度も使われていません。
+Client.cpp(131): warning C4101: 'text': ローカル変数は 1 度も使われていません。
+Client.cpp(144): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
   Main.cpp
-c:\users\admin\documents\visual studio 2015\projects\shooting\FileReader.cpp(53): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-  Material.cpp
-  PlayerUnit.cpp
-  Shot.cpp
-  Unit.cpp
+c:\users\admin\documents\visual studio 2015\projects\shooting\Client.cpp(48): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
+c:\users\admin\documents\visual studio 2015\projects\shooting\Client.cpp(34): warning C4101: 'string': ローカル変数は 1 度も使われていません。
+c:\users\admin\documents\visual studio 2015\projects\shooting\Client.cpp(78): warning C4101: 'text': ローカル変数は 1 度も使われていません。
+c:\users\admin\documents\visual studio 2015\projects\shooting\Client.cpp(103): warning C4101: 'text': ローカル変数は 1 度も使われていません。
+c:\users\admin\documents\visual studio 2015\projects\shooting\Client.cpp(131): warning C4101: 'text': ローカル変数は 1 度も使われていません。
+c:\users\admin\documents\visual studio 2015\projects\shooting\Client.cpp(144): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
   コード生成しています。
-  All 86 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  11 of 85 functions (12.9%) were compiled, the rest were copied from previous compilation.
+    2 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   Shooting.vcxproj -> C:\Users\admin\documents\visual studio 2015\Projects\Shooting\Release\Shooting.exe
   Shooting.vcxproj -> C:\Users\admin\documents\visual studio 2015\Projects\Shooting\Release\Shooting.pdb (Full PDB)
