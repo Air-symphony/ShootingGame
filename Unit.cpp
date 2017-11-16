@@ -9,19 +9,32 @@ public:
 	int X, Y;//中心
 	int time = 0;
 
-	/*画像描画*/
-	void Draw() {
-		X = (X + SIZE_X) % SIZE_X;//画面端の反転
+	/*画像描画
+	invert : 左右画面端での反転*/
+	void Draw(bool invert = TRUE) {
+		if (invert) {
+			X = (X + SIZE_X) % SIZE_X;//画面端の反転
+		}
 		if (graphID != -1) {
 			Draw_Graph(X, Y);
+			if (invert) {
+				if (0 >= X - sizeX) {//左端
+					Draw_Graph(X + SIZE_X, Y);
+				}
+				else if (X + sizeX >= SIZE_X) {//右端
+					Draw_Graph(X - SIZE_X, Y);
+				}
+			}
 		}
 		else {
 			Draw_GreenBox();
-			if (0 >= X - sizeX) {//左端
-				Draw_GreenBox(X + SIZE_X, Y);
-			}
-			else if (X + sizeX >= SIZE_X) {//右端
-				Draw_GreenBox(X - SIZE_X, Y);
+			if (invert) {
+				if (0 >= X - sizeX) {//左端
+					Draw_GreenBox(X + SIZE_X, Y);
+				}
+				else if (X + sizeX >= SIZE_X) {//右端
+					Draw_GreenBox(X - SIZE_X, Y);
+				}
 			}
 		}
 	}

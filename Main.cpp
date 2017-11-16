@@ -2,6 +2,7 @@
 #include "InputKey.cpp"
 #include "Material.cpp"
 #include "PlayerUnit.cpp"
+#include "TohoEnemy.cpp"
 #include "EnemyUnit.cpp"
 #include "Client.cpp"
 #include <iostream>
@@ -244,6 +245,144 @@ public:
 		return false;
 	}
 
+	bool PlayGame_Toho(int scene) {
+		int _stoptime = GetNowCount();
+		player.SetGraph(material.player_Toho);
+		player.SetInit();
+
+		TohoEnemy enemy;
+		enemyCount = 1;
+		enemy.Set(material.enemy_Toho[scene - 1], material.shot_Toho, 7, scene, SIZE_X / 2, 100, 0);//横一列
+		enemy.SetDamageSE(material.damageSE, 2);
+		enemy.SetshotSE(material.enemyshotSE, 2);
+
+		ClearDrawScreen();// 画面を初期化する
+							/*初期描画内容*/
+		player.Draw();
+		enemy.Draw();
+		
+		for (int i = 0; i < player.GetHP(); i++) {//HP表示
+			material.HP.Draw_Graph(10 + i * 30, SIZE_Y - 50, 1);
+		}
+		/*入力待ち*/
+		Draw_String(SIZE_X / 2, SIZE_Y / 2, "Please Push", 8);
+		if (input.getJoypad() > 0) Draw_String(SIZE_X / 2, SIZE_Y / 2, "A", 2);
+		else Draw_String(SIZE_X / 2, SIZE_Y / 2, "SPACE", 2);
+
+		ScreenFlip();// 裏画面の内容を表画面に反映させる 
+
+		while (ProcessMessage() == 0 && input.ForcedTermination() && !input.PushOneframe_Decide()) {}
+		_stoptime = GetNowCount() - _stoptime;
+		clearTime += _stoptime;
+
+		if (CheckSoundMem(material.bgm_pre) == 0 && !loopbgm) {
+			PlaySoundMem(material.bgm_loop, DX_PLAYTYPE_BACK);
+			loopbgm = (CheckSoundMem(material.bgm_loop) == 1);
+		}
+
+		bool start = true;//pause用
+		while (ProcessMessage() == 0 && input.ForcedTermination())
+		{
+			loopbgm = (CheckSoundMem(material.bgm_loop) == 1);
+			if (CheckSoundMem(material.bgm_pre) == 0 && !loopbgm) {
+				PlaySoundMem(material.bgm_loop, DX_PLAYTYPE_BACK);
+			}
+			else if (!loopbgm) {
+				PlaySoundMem(material.bgm_loop, DX_PLAYTYPE_BACK);
+			}
+
+			ClearDrawScreen();// 画面を初期化する
+			clsDx();
+
+								/*プレイヤーの動き*/
+			player.Move();
+			player.Shoot();
+
+			/*武器タイプの表示*/
+			material.weapon[player.Getweapon()].Draw_Graph(SIZE_X, SIZE_Y, 9);
+
+			/*敵の数*/
+			int finish = enemyCount;
+			/*敵の動き*/
+		
+			if (enemy.Move(player)) {//敵の描画と弾発射
+				player.Damege(enemy.Getattack());
+			}
+			if (enemy.GetHP() > 0) {//生きていれば
+				if (player.HitCheck(enemy)) {//自分の弾の確認
+					enemy.Damege(player.Getattack());
+				}
+			}
+			else {
+				finish--;
+			}
+
+			for (int i = 0; i < player.GetHP(); i++) {//HP表示
+				material.HP.Draw_Graph(10 + i * 30, SIZE_Y - 50, 1);
+			}
+
+			if (input.PushOneframe_Stop()) {
+				while (ProcessMessage() == 0 && input.ForcedTermination()) {
+					int stoptime = GetNowCount();
+					if (input.PushOneframe_KeyUP() ||
+						input.PushOneframe_KeyDOWN()) {
+						PlaySoundMem(material.cursorSE[2], DX_PLAYTYPE_BACK);
+						start = !start;
+					}
+					material.menu_Start[0].Draw_Graph(SIZE_X / 2, SIZE_Y * 3 / 5);
+					material.menu_Finish[0].Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10);
+					if (start) material.menu_Start[1].Draw_Graph(SIZE_X / 2, SIZE_Y * 3 / 5);
+					else material.menu_Finish[1].Draw_Graph(SIZE_X / 2, SIZE_Y * 7 / 10);
+					Draw_String("Pause");
+
+					if (input.PushOneframe_Decide()) {
+						if (start) {
+							stoptime = GetNowCount() - stoptime;
+							clearTime = clearTime + stoptime;
+							PlaySoundMem(material.cursorSE[0], DX_PLAYTYPE_BACK);
+							break;
+						}
+						else {
+							PlaySoundMem(material.cursorSE[1], DX_PLAYTYPE_BACK);
+							StopSoundMem(material.bgm_loop);
+							return false;
+						}
+					}
+				}
+			}
+
+			if (input.PushOneframe_RETURN()) finish = 0;
+			ScreenFlip();// 裏画面の内容を表画面に反映させる
+
+							/*そのシーンが終わったら*/
+			if (player.GetHP() <= 0 || finish <= 0) {
+				/*負けた場合*/
+				if (player.GetHP() <= 0) {
+					StopSoundMem(material.bgm_loop);
+					Draw_String("Game Over");
+				}
+				/*全てのシーンが終わったら*/
+				else if (scene >= GameSceneCount) {
+					clearTime = GetNowCount() - clearTime;
+					double time = (((double)clearTime) / 1000.0);
+					Draw_String(SIZE_X / 2, SIZE_Y / 2 + 50, "Time : %lf s", time);
+					Draw_String("Finish");
+					isClear = true;
+					StopSoundMem(material.bgm_loop);
+				}
+				/*途中シーンが終わったら*/
+				else {
+					Draw_String("Next Stage");
+				}
+				int waittime = 1000;
+				WaitTimer(waittime);//1秒待機
+				if (!isClear) clearTime += waittime;
+
+				return player.GetHP() > 0;
+			}
+		}
+		return false;
+	}
 	int getCleartime() {
 		return clearTime;
 	}
@@ -313,7 +452,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				game.init();
 				/*ゲーム内容*/
 				for (int i = 1; i <= GameSceneCount; i++) {
-					if (!game.PlayGame(i)) {
+					if (!game.PlayGame_Toho(i)) {
 						break;
 					}
 				}

@@ -26,6 +26,7 @@ private:
 public:
 	int bgm_pre, bgm_loop;
 	int shotSE[2];
+	int enemyshotSE[2];
 	int reloadSE;
 	int damageSE[2];
 	int cursorSE[3];
@@ -34,6 +35,10 @@ public:
 	Graph enemy[5];
 	Graph shot[3];
 	Graph menu_Start[2], menu_Ranking[2], menu_Finish[2];
+
+	Graph player_Toho;
+	Graph shot_Toho[7];
+	Graph enemy_Toho[5];
 
 	//‘Š‘ÎƒpƒX
 	Material() {
@@ -67,11 +72,32 @@ public:
 		cursorSE[0] = LoadSoundMem("Sound\\decision23.mp3");
 		cursorSE[1] = LoadSoundMem("Sound\\cancel1.mp3");
 		cursorSE[2] = LoadSoundMem("Sound\\cursor4.mp3");
+		enemyshotSE[0] = LoadSoundMem("C:\\Users\\admin\\Desktop\\shot1.mp3");
+		enemyshotSE[1] = LoadSoundMem("C:\\Users\\admin\\Desktop\\shot1.mp3");
+
 		for (int i = 0; i < 2; i++) menu_Start[i % 2].SetGraph(LoadGraph(textNames[i]));
 		for (int i = 2; i < 4; i++) menu_Finish[i % 2].SetGraph(LoadGraph(textNames[i]));
 		for (int i = 4; i < 6; i++) menu_Ranking[i % 2].SetGraph(LoadGraph(textNames[i]));
 
 		for (int i = 0; i < 3; i++) weapon[i].SetGraph(LoadGraph(weaponNames[i]));
+
+		player_Toho.SetGraph(LoadGraph("Picture\\Toho\\Toho_Player.png"));
+		char _filepath[256];
+		char text[10];
+		for (int i = 0; i < 7; i++) {
+			strcpy_s(_filepath, "Picture\\Toho\\Toho_shot");
+			sprintf_s(text, 10, "%d", i + 1);
+			strcat_s(_filepath, text);
+			strcat_s(_filepath, ".png");
+			shot_Toho[i].SetGraph(LoadGraph(_filepath));
+		}
+		for (int i = 0; i < 5; i++) {
+			strcpy_s(_filepath, "Picture\\Toho\\Enemy\\Toho_Enemy");
+			sprintf_s(text, 10, "%d", i + 1);
+			strcat_s(_filepath, text);
+			strcat_s(_filepath, ".png");
+			enemy_Toho[i].SetGraph(LoadGraph(_filepath));
+		}
 	}
 	void DeleteMaterial() {
 		player.Delete();
@@ -83,6 +109,7 @@ public:
 		DeleteSoundMem(bgm_loop);
 		for (int i = 0; i < 2; i++) {
 			DeleteSoundMem(shotSE[i]);
+			DeleteSoundMem(enemyshotSE[i]);
 			DeleteSoundMem(damageSE[i]);
 			DeleteSoundMem(cursorSE[i]);
 		}
