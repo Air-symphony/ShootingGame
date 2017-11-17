@@ -31,7 +31,7 @@ public:
 
 	Graph HP;
 	Graph player, enemy[5], shot[3], background, weapon[3];
-	Graph player_Toho, enemy_Toho[5], shot_Toho[7], background_Toho;
+	Graph player_Toho, enemy_Toho[5], supportEnemy, shot_Toho[7], background_Toho;
 
 	int bgm_pre, bgm_loop;
 	int shotSE[2];
@@ -174,6 +174,13 @@ public:
 			strcat_s(_filepath, Pictrue_extension);
 			enemy_Toho[i].SetGraph(LoadGraph(_filepath));
 		}
+		strcpy_s(_filepath, Picture_path);
+		strcat_s(_filepath, Toho_path);
+		strcat_s(_filepath, Enemy_path);
+		strcat_s(_filepath, "mahoujin");
+		strcat_s(_filepath, Pictrue_extension);
+		supportEnemy.SetGraph(LoadGraph(_filepath));
+
 		//background_Toho.SetGraph(LoadGraph("Picture\\Toho\\Background\\back_05.png"));
 		strcpy_s(_filepath, Picture_path);
 		strcat_s(_filepath, Toho_path);

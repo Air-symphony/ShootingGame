@@ -254,7 +254,8 @@ public:
 
 		TohoEnemy enemy;
 		enemyCount = 1;
-		enemy.Set(material.enemy_Toho[scene - 1], material.shot_Toho, 7, scene, SIZE_X / 2, 100, 0);//‰¡ˆê—ñ
+		enemy.Set(material.enemy_Toho[scene - 1], material.shot_Toho, 7, 
+			scene, SIZE_X / 2, 100, 0, material.supportEnemy);
 		enemy.SetDamageSE(material.damageSE, 2);
 		enemy.SetshotSE(material.enemyshotSE_Toho, 2);
 
@@ -311,6 +312,9 @@ public:
 			/*“G‚Ì“®‚«*/
 		
 			if (enemy.Move(player)) {//“G‚Ì•`‰æ‚Æ’e”­ŽË
+				player.Damege(enemy.Getattack());
+			}
+			if (enemy.SupportEnemyMove(enemy, player)) {
 				player.Damege(enemy.Getattack());
 			}
 			if (enemy.GetHP() > 0) {//¶‚«‚Ä‚¢‚ê‚Î
