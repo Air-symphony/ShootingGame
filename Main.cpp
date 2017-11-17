@@ -103,6 +103,7 @@ public:
 		}
 
 		ClearDrawScreen();// 画面を初期化する
+		material.background.Draw_BackGround(SIZE_X, SIZE_Y);
 		/*初期描画内容*/
 		player.Draw();
 		for (int id = 0; id < enemyCount; id++) {//enemy[count]の描画
@@ -139,6 +140,7 @@ public:
 			}
 
 			ClearDrawScreen();// 画面を初期化する
+			material.background.Draw_BackGround(SIZE_X, SIZE_Y);
 
 			/*プレイヤーの動き*/
 			player.Move();
@@ -254,10 +256,12 @@ public:
 		enemyCount = 1;
 		enemy.Set(material.enemy_Toho[scene - 1], material.shot_Toho, 7, scene, SIZE_X / 2, 100, 0);//横一列
 		enemy.SetDamageSE(material.damageSE, 2);
-		enemy.SetshotSE(material.enemyshotSE, 2);
+		enemy.SetshotSE(material.enemyshotSE_Toho, 2);
 
 		ClearDrawScreen();// 画面を初期化する
-							/*初期描画内容*/
+		
+		/*初期描画内容*/
+		material.background_Toho.Draw_BackGround(SIZE_X, SIZE_Y);
 		player.Draw();
 		enemy.Draw();
 		
@@ -293,8 +297,9 @@ public:
 
 			ClearDrawScreen();// 画面を初期化する
 			clsDx();
+			material.background_Toho.Draw_BackGround(SIZE_X, SIZE_Y);
 
-								/*プレイヤーの動き*/
+			/*プレイヤーの動き*/
 			player.Move();
 			player.Shoot();
 
@@ -383,6 +388,7 @@ public:
 		}
 		return false;
 	}
+
 	int getCleartime() {
 		return clearTime;
 	}
@@ -411,6 +417,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	Game game;
 	int select = 0;//カーソルの位置
+	int normalType = 0, TohoType = 1;
+	/*0, 1*/
+	int gameType = TohoType;
+
 	while (ProcessMessage() == 0 && input.ForcedTermination()) {
 		ClearDrawScreen();// 画面を初期化する
 		clsDx();
@@ -426,9 +436,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			select += 1;
 			select %= 3;
 		}
+		if (input.PushOneframe_KeyLEFT()) {
+			PlaySoundMem(material.cursorSE[2], DX_PLAYTYPE_BACK);
+			gameType = (gameType + 1) % 2;
+		}
+		if (input.PushOneframe_KeyRIGHT()) {
+			PlaySoundMem(material.cursorSE[2], DX_PLAYTYPE_BACK);
+			gameType = (gameType + 1) % 2;
+		}
 	
 		FontSize(60);
-		Draw_String(SIZE_X / 2, SIZE_Y / 4, "Shooting Star");
+		if (gameType == normalType)
+			Draw_String(SIZE_X / 2, SIZE_Y / 4, "Shooting Star");
+		else if (gameType == TohoType)
+			Draw_String(SIZE_X / 2, SIZE_Y / 4, "東方(仮)");
 
 		material.menu_Start[0].Draw_Graph(SIZE_X / 2, SIZE_Y * 5 / 10);
 		material.menu_Ranking[0].Draw_Graph(SIZE_X / 2, SIZE_Y * 6 / 10);
@@ -442,7 +463,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (input.getJoypad() > 0) Draw_String(SIZE_X, SIZE_Y, "JoyPad connected.", 9);
 		else Draw_String(SIZE_X, SIZE_Y, "JoyPad didn't connect.", 9);
 		FontSize(40);
-		
+		 
 		ScreenFlip();// 裏画面の内容を表画面に反映させる
 
 		if (input.PushOneframe_Decide()) {
@@ -451,9 +472,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				PlaySoundMem(material.cursorSE[0], DX_PLAYTYPE_BACK);
 				game.init();
 				/*ゲーム内容*/
-				for (int i = 1; i <= GameSceneCount; i++) {
-					if (!game.PlayGame_Toho(i)) {
-						break;
+				if (gameType == normalType) {
+					for (int i = 1; i <= GameSceneCount; i++) {
+						if (!game.PlayGame(i)) {
+							break;
+						}
+					}
+				}
+				else if (gameType == TohoType) {
+					for (int i = 1; i <= GameSceneCount; i++) {
+						if (!game.PlayGame_Toho(i)) {
+							break;
+						}
 					}
 				}
 				/*強制終了の場合は無し*/

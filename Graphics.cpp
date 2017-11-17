@@ -71,6 +71,12 @@ public:
 		else if (number == 9)
 			DrawGraph(x - sizeX * 2, y - sizeY * 2, graphID, TRUE);
 	}
+	/*
+	拡大表示、背景用
+	DrawExtendGraph(0, 0, display_X, display_Y, graphID, TRUE);*/
+	void Draw_BackGround(int display_X, int display_Y) {
+		DrawExtendGraph(0, 0, display_X, display_Y, graphID, TRUE);
+	}
 	/*中心からの画像サイズ*/
 	int GetsizeX() {
 		return sizeX;

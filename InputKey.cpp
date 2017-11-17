@@ -15,7 +15,7 @@ class InputKey {
 private:
 	int id;
 	int joypad;
-	static const int keytype = 7;//1frameボタンの種類
+	static const int keytype = 9;//1frameボタンの種類
 	int keytime[keytype];
 	bool PushOneframe(int keyCode) {
 		if (CheckHitKey(keyCode) == 1) keytime[id]++;
@@ -87,6 +87,16 @@ public:
 	bool PushOneframe_KeyDOWN() {
 		id = 6;
 		return PushOneframe(KEY_INPUT_DOWN, DX_INPUT_PAD1, PAD_INPUT_DOWN);
+	}
+	/*7, KEY_INPUT_UP*/
+	bool PushOneframe_KeyLEFT() {
+		id = 7;
+		return PushOneframe(KEY_INPUT_LEFT, DX_INPUT_PAD1, PAD_INPUT_LEFT);
+	}
+	/*8, KEY_INPUT_DOWN*/
+	bool PushOneframe_KeyRIGHT() {
+		id = 8;
+		return PushOneframe(KEY_INPUT_RIGHT, DX_INPUT_PAD1, PAD_INPUT_RIGHT);
 	}
 
 
