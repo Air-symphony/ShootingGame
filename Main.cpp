@@ -254,8 +254,8 @@ public:
 
 		TohoEnemy enemy;
 		enemyCount = 1;
-		enemy.Set(material.enemy_Toho[scene - 1], material.shot_Toho, 7, 
-			scene, SIZE_X / 2, 100, 0, material.supportEnemy);
+		enemy.Set(material.enemy_Toho[scene - 1],
+			SIZE_X / 2, SIZE_Y * 1 / 7, scene, material.shot_Toho, 7, material.supportEnemy);
 		enemy.SetDamageSE(material.damageSE, 2);
 		enemy.SetshotSE(material.enemyshotSE_Toho, 2);
 
@@ -453,7 +453,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if (gameType == normalType)
 			Draw_String(SIZE_X / 2, SIZE_Y / 4, "Shooting Star");
 		else if (gameType == TohoType)
-			Draw_String(SIZE_X / 2, SIZE_Y / 4, "“Œ•û(‰¼)");
+			Draw_String(SIZE_X / 2, SIZE_Y / 4, "‚Ò‚É‚áShooting(‰¼)");
 
 		material.menu_Start[0].Draw_Graph(SIZE_X / 2, SIZE_Y * 5 / 10);
 		material.menu_Ranking[0].Draw_Graph(SIZE_X / 2, SIZE_Y * 6 / 10);

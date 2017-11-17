@@ -1,5 +1,5 @@
 #pragma once
-#include "TohoShot.cpp";
+#include "TohoShot.cpp"
 
 const int maxShot_support = 500;
 class SupportEnemy :public Character {
@@ -10,7 +10,7 @@ private:
 	Graph shotgraph;
 	int shotSE[2];
 	TohoShot shot[maxShot_support];
-	int type;
+	int UnitType;
 public:
 	SupportEnemy() {
 		Show = false;
@@ -21,7 +21,7 @@ public:
 			sizeX = sizeY = 30 / 2;
 		}
 		X = x, Y = y;
-		type = _type;
+		UnitType = _type;
 		time = Waittime;
 		movespeed = 3;
 		Show = true;
@@ -32,7 +32,7 @@ public:
 		for (int i = 0; i < count; i++) {
 			shotSE[i] = SE[i];
 		}
-		ChangeVolumeSoundMem(255 * (0.5), shotSE[0]);
+		ChangeVolumeSoundMem((int)(255.0 * (0.5)), shotSE[0]);
 	}
 	void Setshotgraph(Graph _shotgraph) {
 		shotgraph = _shotgraph;
@@ -40,14 +40,15 @@ public:
 	bool Move(Unit boss, Unit player) {
 		if (Show == false) 	return false;
 
-		if (type == 1 || type == 2) {
-			if (type == 1) {
+		if (UnitType == 1 || UnitType == 2) {
+			/*’Ç”öˆÊ’u*/
+			if (UnitType == 1) {
 				X -= movespeed;
 				if (X < boss.GetX() - 100) {
 					X = boss.GetX() - 100;
 				}
 			}
-			else if (type == 2) {
+			else if (UnitType == 2) {
 				X += movespeed;
 				if (X > boss.GetX() + 100) {
 					X = boss.GetX() + 100;
@@ -59,7 +60,8 @@ public:
 				int count = 3;
 				if (shotcount - count < maxShot_support) {
 					for (int i = 0; i < count; i++) {
-						shot[shotcount].Set(shotgraph, 3, X, Y, player, shotcount);
+						shot[shotcount].SetInit(shotgraph, X, Y, player);
+						shot[shotcount].SetShotType(3, 10.0, shotcount);
 						shotcount++;
 					}
 					PlaySoundMem(shotSE[0], DX_PLAYTYPE_BACK, TRUE);
@@ -76,14 +78,14 @@ public:
 			}
 		}
 		Draw();
-		printfDx("Move type(%d)\n", type);
+		/*printfDx("Move type(%d)\n", type);
 		printfDx("Move size(%d, %d)\n", sizeX, sizeY);
 		printfDx("Move (%d, %d) time = %d\n", X, Y, time);
 		printfDx("Move time = %d : %d\n", Show, GetNowCount() - ShowLimit);
-		printfDx("\n");
+		printfDx("\n");*/
 		Show = ((GetNowCount() - ShowLimit) <= supportTime);
 		for (int i = 0; i < shotcount; i++) {
-			if (shot[i].Hit(player, FALSE)) {
+			if (shot[i].Hit(player)) {
 				Compression(i);
 				shotcount--;
 				return true;
